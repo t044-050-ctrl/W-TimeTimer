@@ -3,10 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ダブルタイムタイマー</title>
-    <meta property="og:title" content="ダブルタイムタイマー">
-    <meta property="og:description" content="タイムタイマーとデジタルタイマーを並べて表示できます。">
-    <meta property="og:type" content="website">
+    <title>タイムタイマー</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -127,17 +124,20 @@
                 </div>
 
                 <!-- Quick Add & Reset Buttons -->
-                <div id="timer-quick-actions" class="w-full grid grid-cols-4 gap-2 md:gap-3">
-                    <button id="btn-add-1" class="py-3 bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-700 font-bold rounded-xl border border-neutral-200 text-sm md:text-base transition-colors">
-                        +1分
-                    </button>
-                    <button id="btn-add-5" class="py-3 bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-700 font-bold rounded-xl border border-neutral-200 text-sm md:text-base transition-colors">
-                        +5分
-                    </button>
-                    <button id="btn-add-10" class="py-3 bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-700 font-bold rounded-xl border border-neutral-200 text-sm md:text-base transition-colors">
+                <div id="timer-quick-actions" class="w-full grid grid-cols-5 gap-1.5 sm:gap-2 md:gap-3">
+                    <button id="btn-add-10" class="py-3 bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-700 font-bold rounded-xl border border-neutral-200 text-xs sm:text-sm md:text-base transition-colors">
                         +10分
                     </button>
-                    <button id="btn-reset" class="py-3 bg-neutral-200 hover:bg-neutral-300 active:bg-neutral-400 text-neutral-800 font-bold rounded-xl border border-neutral-300 text-sm md:text-base transition-colors" title="0:00に戻します">
+                    <button id="btn-add-5" class="py-3 bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-700 font-bold rounded-xl border border-neutral-200 text-xs sm:text-sm md:text-base transition-colors">
+                        +5分
+                    </button>
+                    <button id="btn-add-1" class="py-3 bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-700 font-bold rounded-xl border border-neutral-200 text-xs sm:text-sm md:text-base transition-colors">
+                        +1分
+                    </button>
+                    <button id="btn-add-10s" class="py-3 bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-700 font-bold rounded-xl border border-neutral-200 text-xs sm:text-sm md:text-base transition-colors">
+                        +10秒
+                    </button>
+                    <button id="btn-reset" class="py-3 bg-neutral-200 hover:bg-neutral-300 active:bg-neutral-400 text-neutral-800 font-bold rounded-xl border border-neutral-300 text-xs sm:text-sm md:text-base transition-colors" title="0:00に戻します">
                         リセット
                     </button>
                 </div>
@@ -154,7 +154,7 @@
             タイムタイマー
         </button>
         <button id="mode-both" class="mode-btn px-2 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs md:text-sm font-bold transition-all shrink-0 bg-neutral-900 text-white shadow-sm">
-            タイマー＋デジタル
+            タイム＋デジタル
         </button>
         <button id="mode-digital-only" class="mode-btn px-2 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs md:text-sm font-bold transition-all shrink-0 text-neutral-600 hover:bg-neutral-100">
             デジタルタイマー
@@ -174,7 +174,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
             </svg>
-            色の設定
+            設定
         </button>
     </div>
 
@@ -183,8 +183,26 @@
         <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-neutral-200 flex flex-col gap-6">
             
             <div class="flex justify-between items-center border-b border-neutral-200 pb-3">
-                <h2 class="text-xl font-bold text-neutral-800">色の設定</h2>
+                <h2 class="text-xl font-bold text-neutral-800">設定</h2>
                 <button id="btn-close-settings" class="text-neutral-400 hover:text-neutral-600 text-2xl font-bold leading-none">&times;</button>
+            </div>
+
+            <!-- Finish Message Setting -->
+            <div>
+                <label for="input-finish-msg" class="block text-sm font-bold text-neutral-700 mb-2">終了時の文字</label>
+                <input type="text" id="input-finish-msg" class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-800 text-neutral-800 font-bold text-base" placeholder="おわり" maxlength="20">
+            </div>
+
+            <!-- Finish Text Color Palette Selection -->
+            <div>
+                <label class="block text-sm font-bold text-neutral-700 mb-3">終了時の文字の色</label>
+                <div class="flex items-center justify-between gap-2 px-2">
+                    <button class="text-color-btn w-12 h-12 rounded-full border-2 border-transparent transition-all shadow-sm bg-red-500" data-text-color="#ef4444" title="赤"></button>
+                    <button class="text-color-btn w-12 h-12 rounded-full border-2 border-transparent transition-all shadow-sm bg-sky-400" data-text-color="#38bdf8" title="水色"></button>
+                    <button class="text-color-btn w-12 h-12 rounded-full border-2 border-transparent transition-all shadow-sm bg-yellow-400" data-text-color="#eab308" title="黄色"></button>
+                    <button class="text-color-btn w-12 h-12 rounded-full border-2 border-transparent transition-all shadow-sm bg-lime-500" data-text-color="#84cc16" title="黄緑"></button>
+                    <button class="text-color-btn w-12 h-12 rounded-full border-2 border-transparent transition-all shadow-sm bg-orange-500" data-text-color="#f97316" title="オレンジ"></button>
+                </div>
             </div>
 
             <!-- Color Palette Selection -->
@@ -212,7 +230,10 @@
         let state = {
             setMinutes: 0,          // Selected total timer minutes (0 - 60)
             remainingSeconds: 0,    // Current active remaining seconds
+            initialSeconds: 0,      // Starting seconds for "もう一度" restart
             timerColor: '#ef4444',    // Default timer disk color
+            finishMessage: 'おわり',   // Message displayed when finished
+            finishTextColor: '#ef4444', // Default text color when finished
             status: 'stopped',       // 'stopped' | 'running' | 'paused' | 'finished'
             viewMode: 'both',       // 'both' | 'timer-only' | 'digital-only' | 'clock'
             clockFormat: '12h'      // '12h' | '24h'
@@ -237,6 +258,16 @@
             try {
                 const savedColor = localStorage.getItem('time_timer_color');
                 if (savedColor) state.timerColor = savedColor;
+                
+                const savedMsg = localStorage.getItem('time_timer_finish_msg');
+                if (savedMsg !== null && savedMsg !== '') {
+                    state.finishMessage = savedMsg;
+                }
+
+                const savedTextColor = localStorage.getItem('time_timer_finish_text_color');
+                if (savedTextColor) {
+                    state.finishTextColor = savedTextColor;
+                }
             } catch (e) {
                 console.error('LocalStorage error:', e);
             }
@@ -245,6 +276,8 @@
         function saveState() {
             try {
                 localStorage.setItem('time_timer_color', state.timerColor);
+                localStorage.setItem('time_timer_finish_msg', state.finishMessage);
+                localStorage.setItem('time_timer_finish_text_color', state.finishTextColor);
             } catch (e) {
                 console.error('LocalStorage save error:', e);
             }
@@ -380,6 +413,11 @@
             ctx.arc(centerX, centerY, 7, 0, 2 * Math.PI);
             ctx.fillStyle = '#0f172a';
             ctx.fill();
+
+            // カーソル表示の動的制御（停止中のみポインターカーソル）
+            if (canvas) {
+                canvas.style.cursor = (state.status === 'stopped' && state.viewMode !== 'clock') ? 'pointer' : 'default';
+            }
         }
 
         // ANALOG CLOCK DRAWING FOR "現在時刻" MODE (Monochrome, Numbers Outside Dial)
@@ -487,7 +525,8 @@
 
         // SWIPE / TOUCH INTERACTION ON CANVAS TO SET TIME
         function handleCanvasPointer(e) {
-            if (state.viewMode === 'clock') return;
+            // 時計モード時およびタイマー動作中・一時停止中は指操作を無効化
+            if (state.viewMode === 'clock' || state.status !== 'stopped') return;
             
             const rect = canvas.getBoundingClientRect();
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -518,6 +557,8 @@
             if (!canvas) return;
 
             const onStart = (e) => {
+                // タイマーがスタートしている場合はタッチの開始自体をブロック
+                if (state.viewMode === 'clock' || state.status !== 'stopped') return;
                 isDraggingCanvas = true;
                 handleCanvasPointer(e);
             };
@@ -578,6 +619,7 @@
                     displayEl.innerHTML = `<span class="tracking-tight">${h}:${m}</span>${secondsHtml}`;
                 }
 
+                displayEl.style.color = '';
                 displayEl.classList.remove('text-red-500');
                 return;
             }
@@ -586,11 +628,28 @@
             if (periodBadge) periodBadge.classList.add('hidden');
 
             if (state.status === 'finished') {
-                displayEl.textContent = 'おわり';
-                displayEl.classList.add('text-red-500');
+                const msg = state.finishMessage || 'おわり';
+                displayEl.textContent = msg;
+                
+                // 文字数に応じて枠内に綺麗に収まるよう（自動改行対応）フォントサイズとレイアウトを調整
+                const len = msg.length;
+                let fontClasses = "text-5xl sm:text-7xl md:text-8xl lg:text-[7rem]";
+                if (len >= 5 && len <= 8) {
+                    fontClasses = "text-3xl sm:text-5xl md:text-6xl lg:text-[4.5rem]";
+                } else if (len >= 9 && len <= 13) {
+                    fontClasses = "text-2xl sm:text-3xl md:text-4xl lg:text-[3.2rem]";
+                } else if (len >= 14) {
+                    fontClasses = "text-xl sm:text-2xl md:text-3xl lg:text-[2.5rem]";
+                }
+
+                displayEl.className = `w-full h-full flex items-center justify-center text-center font-black tracking-tight break-words whitespace-pre-wrap select-none leading-tight px-2 ${fontClasses}`;
+                displayEl.style.color = state.finishTextColor;
                 return;
             }
 
+            // 通常タイマー表示時のスタイル復元
+            displayEl.style.color = '';
+            displayEl.className = "w-full h-full flex items-baseline justify-center text-6xl sm:text-8xl md:text-9xl lg:text-[8.5rem] font-black tracking-tighter whitespace-nowrap select-none leading-none";
             displayEl.classList.remove('text-red-500');
             const mins = Math.floor(state.remainingSeconds / 60);
             const secs = state.remainingSeconds % 60;
@@ -776,6 +835,7 @@
             const clamped = Math.max(0, Math.min(60, minutes));
             state.setMinutes = clamped;
             state.remainingSeconds = clamped * 60;
+            state.initialSeconds = clamped * 60;
             if (state.status === 'finished') {
                 stopAlarm();
             }
@@ -786,15 +846,42 @@
         }
 
         function addMinutes(extraMinutes) {
-            let currentMins = Math.floor(state.remainingSeconds / 60);
-            if (state.status === 'stopped' || state.status === 'finished') {
-                currentMins = state.setMinutes;
+            let newSecs = Math.min(3600, Math.max(0, state.remainingSeconds + (extraMinutes * 60)));
+            state.remainingSeconds = newSecs;
+            state.setMinutes = Math.ceil(newSecs / 60);
+            if (state.status === 'finished') {
+                stopAlarm();
             }
-            setTimerDuration(currentMins + extraMinutes);
+            if (state.status !== 'running') {
+                state.status = 'stopped';
+                state.initialSeconds = newSecs;
+            }
+            updatePlayPauseButton();
+            updateDigitalDisplay();
+            drawTimer();
+        }
+
+        function addSeconds(extraSeconds) {
+            let newSecs = Math.min(3600, Math.max(0, state.remainingSeconds + extraSeconds));
+            state.remainingSeconds = newSecs;
+            state.setMinutes = Math.ceil(newSecs / 60);
+            if (state.status === 'finished') {
+                stopAlarm();
+            }
+            if (state.status !== 'running') {
+                state.status = 'stopped';
+                state.initialSeconds = newSecs;
+            }
+            updatePlayPauseButton();
+            updateDigitalDisplay();
+            drawTimer();
         }
 
         function startTimer() {
             if (state.remainingSeconds <= 0) return;
+            if (state.status === 'stopped') {
+                state.initialSeconds = state.remainingSeconds;
+            }
             state.status = 'running';
             updatePlayPauseButton();
 
@@ -838,7 +925,7 @@
         function restartTimer() {
             stopAlarm();
             if (timerInterval) clearInterval(timerInterval);
-            state.remainingSeconds = state.setMinutes * 60;
+            state.remainingSeconds = state.initialSeconds || (state.setMinutes * 60);
             state.status = 'stopped';
             updatePlayPauseButton();
             updateDigitalDisplay();
@@ -850,6 +937,7 @@
             if (timerInterval) clearInterval(timerInterval);
             state.setMinutes = 0;
             state.remainingSeconds = 0;
+            state.initialSeconds = 0;
             state.status = 'stopped';
             updatePlayPauseButton();
             updateDigitalDisplay();
@@ -949,6 +1037,15 @@
                     btn.classList.remove('border-neutral-900', 'scale-110');
                 }
             });
+
+            document.querySelectorAll('.text-color-btn').forEach(btn => {
+                const color = btn.getAttribute('data-text-color');
+                if (color === state.finishTextColor) {
+                    btn.classList.add('border-neutral-900', 'scale-110');
+                } else {
+                    btn.classList.remove('border-neutral-900', 'scale-110');
+                }
+            });
         }
 
         // ONLOAD ATTACH LISTENERS
@@ -983,11 +1080,11 @@
             // Timer Minute Adjusters
             addEvt('btn-time-up', 'click', () => addMinutes(1));
             addEvt('btn-time-down', 'click', () => addMinutes(-1));
-
-            // Quick Minutes
+            // Quick Minutes & Seconds
             addEvt('btn-add-1', 'click', () => addMinutes(1));
             addEvt('btn-add-5', 'click', () => addMinutes(5));
             addEvt('btn-add-10', 'click', () => addMinutes(10));
+            addEvt('btn-add-10s', 'click', () => addSeconds(10));
 
             // Start, Restart & Reset Buttons
             addEvt('btn-toggle-timer', 'click', toggleTimer);
@@ -1001,16 +1098,32 @@
 
             // Settings Modal Open/Close
             const modal = document.getElementById('settings-modal');
+            const msgInput = document.getElementById('input-finish-msg');
+
             addEvt('btn-open-settings', 'click', () => {
                 updateSelectedColorUI();
+                if (msgInput) {
+                    msgInput.value = state.finishMessage;
+                }
                 if (modal) modal.classList.remove('hidden');
             });
 
             const closeModal = () => {
                 if (modal) modal.classList.add('hidden');
             };
+
+            const saveAndCloseModal = () => {
+                if (msgInput) {
+                    const newMsg = msgInput.value.trim();
+                    state.finishMessage = newMsg !== '' ? newMsg : 'おわり';
+                    saveState();
+                    updateDigitalDisplay();
+                }
+                closeModal();
+            };
+
             addEvt('btn-close-settings', 'click', closeModal);
-            addEvt('btn-save-settings', 'click', closeModal);
+            addEvt('btn-save-settings', 'click', saveAndCloseModal);
 
             // Color Selection Handler
             document.querySelectorAll('.color-btn').forEach(btn => {
@@ -1019,6 +1132,18 @@
                     saveState();
                     updateSelectedColorUI();
                     drawTimer();
+                });
+            });
+
+            // Text Color Selection Handler
+            document.querySelectorAll('.text-color-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    state.finishTextColor = e.currentTarget.getAttribute('data-text-color');
+                    saveState();
+                    updateSelectedColorUI();
+                    if (state.status === 'finished') {
+                        updateDigitalDisplay();
+                    }
                 });
             });
 
