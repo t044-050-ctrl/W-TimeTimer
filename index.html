@@ -3,10 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ダブルタイムタイマー</title>
-    <meta property="og:title" content="ダブルタイムタイマー">
-    <meta property="og:description" content="タイムタイマーとデジタルタイマーを並べて表示できます。">
-    <meta property="og:type" content="website">
+    <title>タイムタイマー</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -242,6 +239,7 @@
             clockFormat: '12h'      // '12h' | '24h'
         };
 
+        let timerAnimationId = null;
         let timerInterval = null;
         let clockInterval = null;
         let audioCtx = null;
@@ -304,7 +302,7 @@
             const rect = canvas.getBoundingClientRect();
             const dpr = window.devicePixelRatio || 1;
             
-            if (rect.width === 0 || rect.height === 0) return;
+            if (rect.width <= 0 || rect.height <= 0) return;
             
             canvas.width = rect.width * dpr;
             canvas.height = rect.height * dpr;
@@ -321,6 +319,9 @@
             const rect = canvas.getBoundingClientRect();
             const width = rect.width;
             const height = rect.height;
+
+            if (width <= 0 || height <= 0) return;
+
             const centerX = width / 2;
             const centerY = height / 2;
 
@@ -332,9 +333,11 @@
                 return;
             }
 
-            const maxRadius = Math.min(centerX, centerY) - 4;
-            const labelRadius = maxRadius - 10; // Numbers outside
-            const dialRadius = maxRadius - 28;  // Dial circle
+            const maxRadius = Math.max(0, Math.min(centerX, centerY) - 4);
+            const labelRadius = Math.max(0, maxRadius - 10); // Numbers outside
+            const dialRadius = Math.max(0, maxRadius - 28);  // Dial circle
+
+            if (dialRadius <= 0) return;
 
             // Force 60-minute scale while dragging for easy and consistent swipe control
             const scaleMinutes = isDraggingCanvas ? 60 : getScaleMinutes(state.setMinutes);
@@ -357,7 +360,7 @@
 
                 ctx.beginPath();
                 ctx.moveTo(centerX, centerY);
-                ctx.arc(centerX, centerY, dialRadius - 1, -Math.PI / 2, endAngle, true); // true = anticlockwise
+                ctx.arc(centerX, centerY, Math.max(0, dialRadius - 1), -Math.PI / 2, endAngle, true); // true = anticlockwise
                 ctx.closePath();
                 ctx.fillStyle = state.timerColor;
                 ctx.fill();
@@ -430,9 +433,11 @@
             const minutes = now.getMinutes();
             const seconds = now.getSeconds();
 
-            const maxRadius = Math.min(centerX, centerY) - 4;
-            const labelRadius = maxRadius - 10; // 数字を枠の外側に配置
-            const dialRadius = maxRadius - 28;  // 文字盤の円半径
+            const maxRadius = Math.max(0, Math.min(centerX, centerY) - 4);
+            const labelRadius = Math.max(0, maxRadius - 10); // 数字を枠の外側に配置
+            const dialRadius = Math.max(0, maxRadius - 28);  // 文字盤の円半径
+
+            if (dialRadius <= 0) return;
 
             // 1. Clock Face Inner Circle Background
             ctx.beginPath();
@@ -654,8 +659,10 @@
             displayEl.style.color = '';
             displayEl.className = "w-full h-full flex items-baseline justify-center text-6xl sm:text-8xl md:text-9xl lg:text-[8.5rem] font-black tracking-tighter whitespace-nowrap select-none leading-none";
             displayEl.classList.remove('text-red-500');
-            const mins = Math.floor(state.remainingSeconds / 60);
-            const secs = state.remainingSeconds % 60;
+            
+            const totalSecs = Math.ceil(state.remainingSeconds);
+            const mins = Math.floor(totalSecs / 60);
+            const secs = totalSecs % 60;
             
             const formattedMins = String(mins).padStart(2, '0');
             const formattedSecs = String(secs).padStart(2, '0');
@@ -855,7 +862,9 @@
             if (state.status === 'finished') {
                 stopAlarm();
             }
-            if (state.status !== 'running') {
+            if (state.status === 'running') {
+                startTimer();
+            } else {
                 state.status = 'stopped';
                 state.initialSeconds = newSecs;
             }
@@ -871,7 +880,9 @@
             if (state.status === 'finished') {
                 stopAlarm();
             }
-            if (state.status !== 'running') {
+            if (state.status === 'running') {
+                startTimer();
+            } else {
                 state.status = 'stopped';
                 state.initialSeconds = newSecs;
             }
@@ -888,26 +899,40 @@
             state.status = 'running';
             updatePlayPauseButton();
 
+            if (timerAnimationId) {
+                cancelAnimationFrame(timerAnimationId);
+                timerAnimationId = null;
+            }
             if (timerInterval) clearInterval(timerInterval);
             
-            const startTime = Date.now();
-            const initialRemaining = state.remainingSeconds;
+            const startTime = performance.now();
+            const startRemaining = state.remainingSeconds;
 
-            timerInterval = setInterval(() => {
-                const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
-                state.remainingSeconds = Math.max(0, initialRemaining - elapsedSeconds);
+            function step(now) {
+                if (state.status !== 'running') return;
+
+                const elapsed = (now - startTime) / 1000;
+                state.remainingSeconds = Math.max(0, startRemaining - elapsed);
 
                 updateDigitalDisplay();
                 drawTimer();
 
                 if (state.remainingSeconds <= 0) {
                     onTimerFinished();
+                } else {
+                    timerAnimationId = requestAnimationFrame(step);
                 }
-            }, 200);
+            }
+
+            timerAnimationId = requestAnimationFrame(step);
         }
 
         function pauseTimer() {
             state.status = 'paused';
+            if (timerAnimationId) {
+                cancelAnimationFrame(timerAnimationId);
+                timerAnimationId = null;
+            }
             if (timerInterval) clearInterval(timerInterval);
             updatePlayPauseButton();
         }
@@ -927,6 +952,10 @@
 
         function restartTimer() {
             stopAlarm();
+            if (timerAnimationId) {
+                cancelAnimationFrame(timerAnimationId);
+                timerAnimationId = null;
+            }
             if (timerInterval) clearInterval(timerInterval);
             state.remainingSeconds = state.initialSeconds || (state.setMinutes * 60);
             state.status = 'stopped';
@@ -937,6 +966,10 @@
 
         function resetTimer() {
             stopAlarm();
+            if (timerAnimationId) {
+                cancelAnimationFrame(timerAnimationId);
+                timerAnimationId = null;
+            }
             if (timerInterval) clearInterval(timerInterval);
             state.setMinutes = 0;
             state.remainingSeconds = 0;
@@ -1023,7 +1056,12 @@
         }
 
         function onTimerFinished() {
+            if (timerAnimationId) {
+                cancelAnimationFrame(timerAnimationId);
+                timerAnimationId = null;
+            }
             if (timerInterval) clearInterval(timerInterval);
+            state.remainingSeconds = 0;
             state.status = 'finished';
             updatePlayPauseButton();
             updateDigitalDisplay();
